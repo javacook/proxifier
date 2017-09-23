@@ -10,11 +10,16 @@ import java.util.stream.Collectors;
 
 public class Proxifier {
 
-    public static Map<Object, Set<String>> setters = new WeakHashMap<>();
-    public static Map<Object, Set<String>> getters = new WeakHashMap<>();
+    public static boolean enabled = true;
+
+    private final static Map<Object, Set<String>> setters = new WeakHashMap<>();
+    private final static Map<Object, Set<String>> getters = new WeakHashMap<>();
 
     public static <T> T proxyOf(final T object)  {
         Objects.requireNonNull(object, "Argument object is null");
+        if (!enabled) {
+            return object;
+        }
         ProxyFactory factory = new ProxyFactory();
         factory.setSuperclass(object.getClass());
         factory.setFilter(
@@ -54,15 +59,11 @@ public class Proxifier {
         }
     }
 
-    public static boolean allSettersInvoked(Object wrapper, String... excludeProperties) {
-        final Set<String> excludePropSet = Arrays.stream(excludeProperties)
-                .map(prop -> BeanNameUtils.prependSet(prop))
-                .collect(Collectors.toSet());
-        final Set<String> setters = Proxifier.setters.get(wrapper);
-        return !setters.stream().anyMatch(setter -> !excludePropSet.contains(setter));
-    }
 
     public static Set<String> settersNotInvoked(Object wrapper, String... excludeProperties) {
+        if (!enabled) {
+            return Collections.EMPTY_SET;
+        }
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .map(prop -> BeanNameUtils.prependSet(prop))
                 .collect(Collectors.toSet());
@@ -71,7 +72,11 @@ public class Proxifier {
                 .collect(Collectors.toSet());
     }
 
+
     public static Set<String> gettersNotInvoked(Object wrapper, String... excludeProperties) {
+        if (!enabled) {
+            return Collections.EMPTY_SET;
+        }
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .flatMap(prop -> Arrays.asList(BeanNameUtils.prependGet(prop), BeanNameUtils.prependIs(prop)).stream())
                 .collect(Collectors.toSet());
@@ -94,6 +99,5 @@ public class Proxifier {
             throw new IllegalStateException("Getters not invoked: " + getters);
         }
     }
-
 
 }
