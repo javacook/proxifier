@@ -44,6 +44,7 @@ Getters (resp. setters) which should not be checked can be specified as a list o
 
 #### Enable / disable
 Obviousely, the proxification costs additional execution time. To avoid this the proxification 
-can be disabled (it is enabled by default) globaly by setting
+can be disabled (enabled by default) globaly by setting
 
-    Proxifier.enabled = false;     
+    Proxifier.enabled = false;
+for example in production mode.    
