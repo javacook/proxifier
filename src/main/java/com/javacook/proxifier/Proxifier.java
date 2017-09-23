@@ -1,3 +1,5 @@
+package com.javacook.proxifier;
+
 import javassist.util.proxy.MethodHandler;
 import javassist.util.proxy.ProxyFactory;
 
@@ -18,7 +20,7 @@ public class Proxifier {
         factory.setFilter(
                 method -> Modifier.isPublic(method.getModifiers()) &&
                           !Modifier.isStatic(method.getModifiers()) &&
-                          BeanNameUtils.isSetterOrGetterName(method.getName()) &&
+                          BeanNameUtils.isSetterOrGetterOrIsserName(method.getName()) &&
                           !"getClass".equals(method.getName())
         );
 
@@ -38,7 +40,9 @@ public class Proxifier {
 
             final Set<String> getters = Arrays.stream(object.getClass().getMethods())
                     .map(method -> method.getName())
-                    .filter(methodName -> BeanNameUtils.isGetterName(methodName) && !"getClass".equals(methodName))
+                    .filter(methodName ->
+                            BeanNameUtils.isGetterOrIsserName(methodName) &&
+                            !"getClass".equals(methodName))
                     .collect(Collectors.toSet());
 
             Proxifier.setters.put(wrapper, setters);
@@ -69,7 +73,7 @@ public class Proxifier {
 
     public static Set<String> gettersNotInvoked(Object wrapper, String... excludeProperties) {
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
-                .map(prop -> BeanNameUtils.prependGet(prop))
+                .flatMap(prop -> Arrays.asList(BeanNameUtils.prependGet(prop), BeanNameUtils.prependIs(prop)).stream())
                 .collect(Collectors.toSet());
         return Proxifier.getters.get(wrapper).stream()
                 .filter(getter -> !excludePropSet.contains(getter))
@@ -91,22 +95,5 @@ public class Proxifier {
         }
     }
 
-    /*===========================================================*\
-     * main                                                      *
-    \*===========================================================*/
-
-    public static void main(String[] args) {
-        final Dog dog = new Dog();
-        final Hund hund = new Hund("Pudel", 23);
-        final Dog dogProxy = Proxifier.proxyOf(dog);
-        final Hund hundProxy = Proxifier.proxyOf(hund);
-//        dogProxy.setRace(hundProxy.getRasse());
-        dogProxy.setWeight(hundProxy.getGewicht());
-//        assertAllSettersInvoked(dogProxy, "setWeight");
-        assertAllGettersInvoked(hundProxy, "getGewicht");
-
-        System.out.println(dog.getRace());
-        System.out.println(dog.getWeight());
-    }
 
 }
