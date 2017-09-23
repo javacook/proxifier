@@ -1,6 +1,8 @@
 # proxifier
-Proxifier can create a proxy of an object in order to check whether all setters resp. getters have been invoked.
+### Summary
+Proxifier creates a proxy of an object in order to check whether all setters resp. getters have been invoked.
 
+### Details
 In many situations we have to map properties from one object into another which are structurally very similar:
 
     dog.setRace( hund.getRasse() );
@@ -32,7 +34,15 @@ be achieved with a simple modification:
 The proxy objects propergate the mapping to the source objects so that you can / should 
 continue to work with the original objects (here e.g. <code>dog</code> and <code>hund</code>)
 
-### Enable / disable
-The Proxification can be disabled (it is enabled by default) globaly by setting
+#### Excepted properties
+In certain cases not every getter (resp setter) needs to be invoked during the mapping.
+Getters (resp setters) which should not be checked can be specified as a list of getters (resp setters) or properties:
+     
+    // Exclude some attributes from the safty check: 
+    Proxifier.assertAllGettersInvoked(hundPx, "getRasse", "gewicht");
+
+#### Enable / disable
+Obviousely, the proxification costs additional time. To avoid this the proxification 
+can be disabled (it is enabled by default) globaly by setting
 
     Proxifier.enabled = false;     
