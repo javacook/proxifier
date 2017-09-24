@@ -2,7 +2,7 @@
 
 ### Summary
 Proxifier creates proxies of beans in order to check whether all setters resp. getters have been invoked,
-e.g. in case of bean mappings.
+especially in case of bean mappings.
 
 ### Details
 In many situations we have to map properties from one object into another which are structurally very similar:
@@ -15,9 +15,9 @@ In many situations we have to map properties from one object into another which 
 Things can quickly get dangerous when a new property is added for instance to the class 
 <code>hund</code>. Not seldom, you forget to update the mapping code at all locations 
 where this new property had has actually to be mapped,too (what leads to common errors 
-like missing data, NullPointerExceptions, etc.)  
+like missing data, NullPointerExceptions, etc.).
 
-This utility protects you in so far as it can for example throw an exception when 
+This utility protects you in so far as it can throw an exception when 
 a new property was added **without** mapping it. This can be achieved by a simple 
 modification:
 
@@ -33,7 +33,7 @@ modification:
     Proxifier.assertAllGettersInvoked(hundPx);
     Proxifier.assertAllSettersInvoked(dogPx);
     
-    // Execution continued with the originals
+    // Execution continued with the originals:
     return dog;
     
 The proxy objects propagate the bean mapping to the original objects 
