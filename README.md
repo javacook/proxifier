@@ -1,4 +1,5 @@
 # proxifier
+
 ### Summary
 Proxifier creates a proxy of an object in order to check whether all setters resp. getters have been invoked,
 e.g. in case of bean mappings.
@@ -53,3 +54,16 @@ Of course, this proxification costs additional execution time. But, for example 
 production environments it can be disabled (enabled by default) globally by setting
 
     Proxifier.enabled = false;
+    
+## Maven
+
+    <repository>
+        <id>javacook-maven-repository</id>
+        <url>http://www.clean-coder.de:8080/artifactory/javacook/</url>
+    </repository>
+
+    <dependency> 
+        <groupId>com.javacook</groupId>
+        <artifactId>proxifier</artifactId>
+        <version>1.0</version>
+    </dependency>    
