@@ -8,7 +8,6 @@ Servers
 **/.classpath
 .metadata
 .recommenders
-*.jar
 *.war
 *.ear
 *.class
