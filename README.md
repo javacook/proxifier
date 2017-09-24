@@ -14,11 +14,11 @@ In many situations we have to map properties from one object into another which 
     
 Things can quickly get dangerous when a new property is added for instance to the class 
 <code>hund</code>. Not seldom, you forget to update the mapping code at all locations 
-where this new property actually had have to be mapped, too (what leads to common errors 
+where this new property actually had have to be mapped (what leads to common errors 
 like missing data, NullPointerExceptions, etc.).
 
 This utility protects you in so far as it can throw an exception when 
-a new property was added **without** mapping it. This can be achieved 
+a new property was added **without** being mapped. This can be achieved 
 through a simple modification:
 
     Dog dogPx = Proxifier.proxyOf(dog);
