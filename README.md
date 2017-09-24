@@ -1,7 +1,7 @@
 # proxifier
 
 ### Summary
-Proxifier creates a proxy of an object in order to check whether all setters resp. getters have been invoked,
+Proxifier creates proxies of beans in order to check whether all setters resp. getters have been invoked,
 e.g. in case of bean mappings.
 
 ### Details
@@ -14,11 +14,12 @@ In many situations we have to map properties from one object into another which 
     
 Things can quickly get dangerous when a new property is added for instance to the class 
 <code>hund</code>. Not seldom, you forget to update the mapping code at all locations 
-where this new property had has to be mapped likewise (what leads to common errors 
+where this new property had has actually to be mapped,too (what leads to common errors 
 like missing data, NullPointerExceptions, etc.)  
 
-This utility protects you in so far as e.g. an exception can be thrown when a new property 
-was added **without** mapping it. This can be achieved by a simple modification:
+This utility protects you in so far as it can for example throw an exception when 
+a new property was added **without** mapping it. This can be achieved by a simple 
+modification:
 
     Dog dogPx = Proxifier.proxyOf(dog);
     Hund hundPx = Proxifier.proxyOf(hund);
