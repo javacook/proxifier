@@ -1,5 +1,7 @@
 package com.javacook.proxifier;
 
+import com.javacook.proxifier.testdata.Dog;
+import com.javacook.proxifier.testdata.Hund;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

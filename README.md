@@ -10,16 +10,17 @@ In many situations we have to map properties from one object into another which 
     dog.setRace( hund.getRasse() );
     dog.setWeight( hund.getGewicht() );
     dog.setNice( hund.isLieb() );
-    return dog;
     
 Things can quickly get dangerous when a new property is added for instance to the class 
 <code>Hund</code>. Not seldom, we forget to update the mapping code at all locations 
 where this new property actually had have to be mapped (what leads to common errors 
 like missing data, NullPointerExceptions, etc.).
 
-This utility protects you in so far as it can throw an exception when 
-a new property was added **without** being mapped. This can be achieved 
-through a simple modification:
+This utility protects you in so far as it can for example throw an exception when 
+a new property was added **without** being mapped. You can either add
+this safety check to the existing mapping code by a simple modification:
+
+#### Tight coupled with the mapping code
 
     Dog dogPx = Proxifier.proxyOf(dog);
     Hund hundPx = Proxifier.proxyOf(hund);
@@ -33,9 +34,43 @@ through a simple modification:
     Proxifier.assertAllGettersInvoked(hundPx);
     Proxifier.assertAllSettersInvoked(dogPx);
     
-    // Execution continued with the originals:
+    // Continue with the originals:
     return dog;
     
+#### Decoupled from the mapping code
+    
+Another possibility is to move the safety check completely into a separate test class.
+For this it is necessary that the mapping code looks like:
+
+    // The target object is passed as parameter, too:
+    public static void mapHundToDog(final Hund hund, final Dog dog) {
+        dog.setRace( hund.getRasse() );
+        dog.setWeight( hund.getGewicht() );
+        dog.setNice( hund.isLieb() );
+    }   
+    
+Usually, this can be be achieved through a small refactoring. Then the test 
+could look like:
+
+    @Test
+    public void testMapper() {
+
+        // Create the test data:
+        final Dog dog = new Dog();
+        final Hund hund = new Hund("Pudel", 23, true);
+
+        // Replace the test objects with proxies:
+        final Dog dogPx = Proxifier.proxyOf(dog);
+        final Hund hundPx = Proxifier.proxyOf(hund);
+
+        // Call the mapper:
+        Mapper.mapHundToDog(hundPx, dogPx);
+
+        // Safety check:
+        Proxifier.assertAllGettersInvoked(hundPx);
+        Proxifier.assertAllSettersInvoked(dogPx);
+    }
+
 The proxy objects propagate the bean mapping to the original objects 
 (here <code>dog</code> and <code>hund</code>). I.e., the properties of the 
 originals are automatically mapped as well. So, the proxified objects 
@@ -51,11 +86,17 @@ Getters (resp. setters) which shall not be checked can be specified as a list of
     Proxifier.assertAllGettersInvoked(hundPx, "getRasse", "gewicht");
 
 #### Enable / disable
-Of course, this proxification costs additional execution time. But, for example in 
-production environments it can be disabled (enabled by default) globally by setting
+Of course, this proxification costs additional execution time. If the proxification is
+used in the production code like in variant 1 it can be disabled (enabled by default) 
+globally by setting
 
     Proxifier.enabled = false;
     
+    
+### Examples
+ 
+Some examples can be found in the <code>/src/test/java/com/javacook/proxifier/usage</code>.
+     
 ## Maven
 
     <repository>
@@ -67,4 +108,4 @@ production environments it can be disabled (enabled by default) globally by sett
         <groupId>com.javacook</groupId>
         <artifactId>proxifier</artifactId>
         <version>1.0</version>
-    </dependency>    
+    </dependency>
