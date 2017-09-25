@@ -1,10 +1,9 @@
-package com.javacook.proxifier;
+package com.javacook.proxifier.testdata;
 
 public class Hund {
 
     public Hund() {
     }
-
 
     public Hund(String rasse, int gewicht, boolean lieb) {
         this.rasse = rasse;

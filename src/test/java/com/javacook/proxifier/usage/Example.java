@@ -1,6 +1,11 @@
-package com.javacook.proxifier;
+package com.javacook.proxifier.usage;
 
-public class ProxifierMain {
+import com.javacook.proxifier.testdata.Dog;
+import com.javacook.proxifier.testdata.Hund;
+import com.javacook.proxifier.Proxifier;
+
+
+public class Example {
 
     public static void main(String[] args) {
         final Dog dog = new Dog();

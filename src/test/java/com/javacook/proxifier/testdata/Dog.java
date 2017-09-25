@@ -1,4 +1,4 @@
-package com.javacook.proxifier;
+package com.javacook.proxifier.testdata;
 
 public class Dog {
 
@@ -39,7 +39,7 @@ public class Dog {
 
     @Override
     public String toString() {
-        return "com.javacook.proxifier.Dog{" +
+        return "Dog{" +
                 "race='" + race + '\'' +
                 ", weight=" + weight +
                 ", nice=" + nice +
