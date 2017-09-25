@@ -13,7 +13,7 @@ In many situations we have to map properties from one object into another which 
     return dog;
     
 Things can quickly get dangerous when a new property is added for instance to the class 
-<code>hund</code>. Not seldom, we forget to update the mapping code at all locations 
+<code>Hund</code>. Not seldom, we forget to update the mapping code at all locations 
 where this new property actually had have to be mapped (what leads to common errors 
 like missing data, NullPointerExceptions, etc.).
 
@@ -37,7 +37,7 @@ through a simple modification:
     return dog;
     
 The proxy objects propagate the bean mapping to the original objects 
-(here <code>dog</code> and <code>hund</code>). I.e. the properties of the 
+(here <code>dog</code> and <code>hund</code>). I.e., the properties of the 
 originals are automatically mapped as well. So, the proxified objects 
 should only be used in the set/get code regions, the further execution
 can be continued using the originals again.
