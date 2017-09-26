@@ -54,6 +54,10 @@ public class Proxifier {
             Proxifier.getters.put(wrapper, getters);
             return wrapper;
         }
+        catch (NoSuchMethodException e ) {
+            e.getMessage();
+            throw new IllegalArgumentException("The class to be proxified needs a default constructor: " + extractClassName(e));
+        }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,6 +102,14 @@ public class Proxifier {
         if (!getters.isEmpty()) {
             throw new IllegalStateException("Getters not invoked: " + getters);
         }
+    }
+
+
+    private static String extractClassName(NoSuchMethodException e) {
+        final String message = e.getMessage();
+        if (message == null) return "No further class details";
+        final int indexOfUnderscore = message.indexOf("_");
+        return (indexOfUnderscore < 0)? message : message.substring(0, indexOfUnderscore);
     }
 
 }

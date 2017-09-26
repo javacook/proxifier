@@ -40,17 +40,18 @@ this safety check to the existing mapping code by a simple modification:
 #### Decoupled from the mapping code
     
 Another possibility is to move the safety check completely into a separate test class.
-For this it is necessary that the mapping code looks like:
+For this purpose it is necessary that the mapping code has the following form:
 
-    // The target object is passed as parameter, too:
+    // Here the target object is also passed as a method parameter
+    // and not created inside the mapper:
     public static void mapHundToDog(final Hund hund, final Dog dog) {
         dog.setRace( hund.getRasse() );
         dog.setWeight( hund.getGewicht() );
         dog.setNice( hund.isLieb() );
     }   
     
-Usually, this can be be achieved through a small refactoring. Then the test 
-could look like:
+Usually, this can be be achieved through a small refactoring. If this condition is 
+hold the test could look like:
 
     @Test
     public void testMapper() {
@@ -86,12 +87,14 @@ Getters (resp. setters) which shall not be checked can be specified as a list of
     Proxifier.assertAllGettersInvoked(hundPx, "getRasse", "gewicht");
 
 #### Enable / disable
-Of course, this proxification costs additional execution time. If the proxification is
-used in the production code like in variant 1 it can be disabled (enabled by default) 
+Of course, this proxification costs additional execution time. If it is
+used in the production code like in variant 1 it can also be disabled (enabled by default) 
 globally by setting
 
     Proxifier.enabled = false;
     
+Then the orginal objects are returned instead if the proxified so that there are no 
+drawbacks on performance.    
     
 ### Examples
  
