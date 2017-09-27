@@ -1,11 +1,12 @@
 # proxifier
 
 ### Summary
-Proxifier creates proxies of beans in order to check whether all setters resp. getters have been invoked,
-especially in case of bean mappings.
+Proxifier creates proxies of beans in order to check whether all setters resp. getters 
+have been invoked, especially in case of bean mappings.
 
 ### Details
-In many situations we have to map properties from one object into another which are structurally very similar:
+In many situations we have to map properties from one object into another which are 
+structurally very similar:
 
     dog.setRace( hund.getRasse() );
     dog.setWeight( hund.getGewicht() );
@@ -13,12 +14,12 @@ In many situations we have to map properties from one object into another which 
     
 Things can quickly get dangerous when a new property is added for instance to the class 
 <code>Hund</code>. Not seldom, we forget to update the mapping code at all locations 
-where this new property actually had have to be mapped (what leads to common errors 
-like missing data, NullPointerExceptions, etc.).
+where this new property actually had have to be mapped (what leads to common errors like 
+missing data, NullPointerExceptions, etc.).
 
-This utility protects you in so far as it can for example throw an exception when 
-a new property was added **without** being mapped. You can either add
-this safety check to the existing mapping code by a simple modification:
+This utility protects you in so far as it can for example throw an exception when a new 
+property was added **without** being mapped. You can either add this safety check to the 
+existing mapping code by a simple modification:
 
 #### Tight coupled with the mapping code
 
@@ -50,8 +51,9 @@ For this purpose it is necessary that the mapping code has the following form:
         dog.setNice( hund.isLieb() );
     }   
     
-Usually, this can be be achieved through a small refactoring. If this condition is 
-hold the test could look like:
+Usually, this can be be achieved through a small refactoring (see <code>TypicalMapper</code> 
+and <code>MapperRefactored</code> in test/java/com/javacook/proxifier/usage). If this 
+condition is hold the test code could look like:
 
     @Test
     public void testMapper() {
@@ -73,10 +75,9 @@ hold the test could look like:
     }
 
 The proxy objects propagate the bean mapping to the original objects 
-(here <code>dog</code> and <code>hund</code>). I.e., the properties of the 
-originals are automatically mapped as well. So, the proxified objects 
-should only be used in the set/get code regions, the further execution
-can be continued using the originals again.
+(here <code>dog</code> and <code>hund</code>). I.e., the properties of the originals 
+are automatically mapped as well. So, the proxified objects should only be used in the 
+set/get code regions, the further execution can be continued using the originals again.
 
 #### Excepted properties
 In certain cases not every getter (resp. setter) needs to be invoked during the mapping.
