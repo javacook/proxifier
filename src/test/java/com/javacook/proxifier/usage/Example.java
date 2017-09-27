@@ -5,6 +5,13 @@ import com.javacook.proxifier.testdata.Hund;
 import com.javacook.proxifier.Proxifier;
 
 
+/**
+ * This example shows the working principal of Proxifier. But note,
+ * you need not necessarily put the proxification code into your
+ * production code as shown here. An example that shows how
+ * it can be evacuated into a test class is described in
+ * <code>TypicalMapper</code> and <code>MapperRefactored</code>.
+ */
 public class Example {
 
     public static void main(String[] args) {

@@ -20,7 +20,7 @@ public class MapperTest {
         final Hund hundPx = Proxifier.proxyOf(hund);
 
         // Call the mapper:
-        Mapper.mapHundToDog(hundPx, dogPx);
+        MapperRefactored.mapHundToDog(hundPx, dogPx);
 
         // Safety check:
         Proxifier.assertAllGettersInvoked(hundPx);

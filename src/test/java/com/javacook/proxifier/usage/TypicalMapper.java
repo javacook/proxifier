@@ -5,9 +5,15 @@ import com.javacook.proxifier.testdata.Hund;
 
 
 /**
- * To move the safty check completely to a test class the mapping function has
- * to be converted into the form: <code>fun(sourceBean, targetBean)</code>.
- * You find the result in the class <code>MapperRefactored</code>.
+ * This is the signature of a typical mapper (maybe the methods are not
+ * necessarily static).
+ *
+ * To move the safe1ty check completely to a test class the mapping function
+ * <code>mapHundToDog</code> has to be converted into the form:
+ * <pre>
+ * <code>fun(sourceBean, targetBean)</code>.
+ * </pre>
+ * You find an example of the conversion in the class <code>MapperRefactored</code>.
  * @see MapperRefactored
  */
 public class TypicalMapper {
