@@ -38,6 +38,28 @@ public class Dog {
 
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Dog dog = (Dog) o;
+
+        if (getWeight() != dog.getWeight()) return false;
+        if (isNice() != dog.isNice()) return false;
+        return getRace() != null ? getRace().equals(dog.getRace()) : dog.getRace() == null;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = getRace() != null ? getRace().hashCode() : 0;
+        result = 31 * result + getWeight();
+        result = 31 * result + (isNice() ? 1 : 0);
+        return result;
+    }
+
+
+    @Override
     public String toString() {
         return "Dog{" +
                 "race='" + race + '\'' +

@@ -43,4 +43,25 @@ public class Hund {
     public void setLieb(boolean lieb) {
         this.lieb = lieb;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Hund hund = (Hund) o;
+        if (getGewicht() != hund.getGewicht()) return false;
+        if (isLieb() != hund.isLieb()) return false;
+        return getRasse() != null ? getRasse().equals(hund.rasse) : hund.rasse == null;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = getRasse() != null ? getRasse().hashCode() : 0;
+        result = 31 * result + getGewicht();
+        result = 31 * result + (isLieb() ? 1 : 0);
+        return result;
+    }
 }
