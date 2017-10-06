@@ -22,17 +22,30 @@ public class Proxifier {
         }
         ProxyFactory factory = new ProxyFactory();
         factory.setSuperclass(object.getClass());
-        factory.setFilter(
-                method -> Modifier.isPublic(method.getModifiers()) &&
-                          !Modifier.isStatic(method.getModifiers()) &&
-                          BeanNameUtils.isSetterOrGetterOrIsserName(method.getName()) &&
-                          !"getClass".equals(method.getName())
+        factory.setFilter(method ->
+                Modifier.isPublic(method.getModifiers()) &&
+                !Modifier.isStatic(method.getModifiers()) &&
+                (
+                   (BeanNameUtils.isSetterOrGetterOrIsserName(method.getName()) && !"getClass".equals(method.getName()))
+                      || BeanNameUtils.isEqualsOrHashCode(method.getName()
+                   )
+                )
         );
 
         MethodHandler methodHandler = (self, thisMethod, proceed, args) -> {
-            setters.get(self).remove(thisMethod.getName());
-            getters.get(self).remove(thisMethod.getName());
-            return thisMethod.invoke(object, args);
+            final String methodName = thisMethod.getName();
+
+            if ("equals".equals(methodName) && args.length == 1) {
+                return (Boolean)(self == args[0]);
+            }
+            else if ("hashCode".equals(methodName) && args.length == 0) {
+                return (Integer)System.identityHashCode(self);
+            }
+            else {
+                setters.get(self).remove(thisMethod.getName());
+                getters.get(self).remove(thisMethod.getName());
+                return thisMethod.invoke(object, args);
+            }
         };
 
         try {
@@ -46,8 +59,7 @@ public class Proxifier {
             final Set<String> getters = Arrays.stream(object.getClass().getMethods())
                     .map(method -> method.getName())
                     .filter(methodName ->
-                            BeanNameUtils.isGetterOrIsserName(methodName) &&
-                            !"getClass".equals(methodName))
+                            BeanNameUtils.isGetterOrIsserName(methodName) && !"getClass".equals(methodName))
                     .collect(Collectors.toSet());
 
             Proxifier.setters.put(wrapper, setters);
