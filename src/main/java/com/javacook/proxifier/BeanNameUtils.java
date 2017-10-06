@@ -28,6 +28,11 @@ public class BeanNameUtils {
         return isSetterName(name) || isGetterOrIsserName(name);
     }
 
+    public static boolean isEqualsOrHashCode(String name) {
+        Objects.requireNonNull(name, "Argument name is null");
+        return "equals".equals(name) || "hashCode".equals(name);
+    }
+
     public static String prependSet(String setterOrProp) {
         return isSetterName(setterOrProp)? setterOrProp : "set" + toUpperFirstChar(setterOrProp);
     }
