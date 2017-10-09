@@ -8,6 +8,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+/**
+ * This class can be used to check which setters and getters of a (bean) object
+ * have been called, in particular to validate bean mappers. For the usages you
+ * can find some examples in the test folder.
+ */
 public class Proxifier {
 
     public static boolean enabled = true;
@@ -15,6 +20,14 @@ public class Proxifier {
     private final static Map<Object, Set<String>> setters = new WeakHashMap<>();
     private final static Map<Object, Set<String>> getters = new WeakHashMap<>();
 
+
+    /**
+     * Produces a proxy of <code>object</code> that is able to count the setter
+     * and getter calls.
+     * @param object the original (bean) object to proxify
+     * @param <T> type of the original object
+     * @return a proxification of <code>object</code>
+     */
     public static <T> T proxyOf(final T object)  {
         Objects.requireNonNull(object, "Argument object is null");
         if (!enabled) {
@@ -35,6 +48,10 @@ public class Proxifier {
         MethodHandler methodHandler = (self, thisMethod, proceed, args) -> {
             final String methodName = thisMethod.getName();
 
+            // equals and hashCode have to be overwritten to a simple form since
+            // the implementation of the original objects may have used getters and
+            // in their implementation what leads to an infinite loop when removing
+            // their getters resp. setter from the weak hash map (see the else branch)
             if ("equals".equals(methodName) && args.length == 1) {
                 return (Boolean)(self == args[0]);
             }
@@ -49,7 +66,7 @@ public class Proxifier {
         };
 
         try {
-            T wrapper = (T) factory.create(new Class<?>[0], new Object[0], methodHandler);
+            T proxy = (T) factory.create(new Class<?>[0], new Object[0], methodHandler);
 
             final Set<String> setters = Arrays.stream(object.getClass().getMethods())
                     .map(method -> method.getName())
@@ -62,9 +79,9 @@ public class Proxifier {
                             BeanNameUtils.isGetterOrIsserName(methodName) && !"getClass".equals(methodName))
                     .collect(Collectors.toSet());
 
-            Proxifier.setters.put(wrapper, setters);
-            Proxifier.getters.put(wrapper, getters);
-            return wrapper;
+            Proxifier.setters.put(proxy, setters);
+            Proxifier.getters.put(proxy, getters);
+            return proxy;
         }
         catch (NoSuchMethodException e ) {
             e.getMessage();
@@ -75,42 +92,65 @@ public class Proxifier {
         }
     }
 
-
-    public static Set<String> settersNotInvoked(Object wrapper, String... excludeProperties) {
+    /**
+     * Returns the set of setters which have not been invoked with respect to a set of
+     * properties (or setter names) that should be excluded
+     * @param proxy the proxified object yielded from <code>proxyOf</code>
+     * @param excludeProperties names of properties or setters not to check
+     * @return set of setter names
+     */
+    public static Set<String> settersNotInvoked(Object proxy, String... excludeProperties) {
         if (!enabled) {
             return Collections.EMPTY_SET;
         }
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .map(prop -> BeanNameUtils.prependSet(prop))
                 .collect(Collectors.toSet());
-        return Proxifier.setters.get(wrapper).stream()
+        return Proxifier.setters.get(proxy).stream()
                 .filter(setter -> !excludePropSet.contains(setter))
                 .collect(Collectors.toSet());
     }
 
-
-    public static Set<String> gettersNotInvoked(Object wrapper, String... excludeProperties) {
+    /**
+     * Returns the set of getters which have not been invoked with respect to a set of
+     * properties (or getter names) that should be excluded
+     * @param proxy the proxified object yielded from <code>proxyOf</code>
+     * @param excludeProperties names of properties or getters not to check
+     * @return set of getter names
+     */
+    public static Set<String> gettersNotInvoked(Object proxy, String... excludeProperties) {
         if (!enabled) {
             return Collections.EMPTY_SET;
         }
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .flatMap(prop -> Arrays.asList(BeanNameUtils.prependGet(prop), BeanNameUtils.prependIs(prop)).stream())
                 .collect(Collectors.toSet());
-        return Proxifier.getters.get(wrapper).stream()
+        return Proxifier.getters.get(proxy).stream()
                 .filter(getter -> !excludePropSet.contains(getter))
                 .collect(Collectors.toSet());
     }
 
-
-    public static void assertAllSettersInvoked(Object wrapper, String... excludeProperties) {
-        final Set<String> setters = settersNotInvoked(wrapper, excludeProperties);
+    /**
+     * Used in tests to check whether all setters have been invoked
+     * @param proxy the proxified object yielded from <code>proxyOf</code>
+     * @param excludeProperties names of properties or setters not to check
+     * @throws IllegalStateException if not all setters were invoked 
+     */
+    public static void assertAllSettersInvoked(Object proxy, String... excludeProperties) {
+        final Set<String> setters = settersNotInvoked(proxy, excludeProperties);
         if (!setters.isEmpty()) {
             throw new IllegalStateException("Setters not invoked: " + setters);
         }
     }
 
-    public static void assertAllGettersInvoked(Object wrapper, String... excludeProperties) {
-        final Set<String> getters = gettersNotInvoked(wrapper, excludeProperties);
+    /**
+     * Used in tests to check whether all getters have been invoked
+     * @param proxy the proxified object yielded from <code>proxyOf</code>
+     * @param excludeProperties names of properties or getters not to check
+     * @throws IllegalStateException if not all getters were invoked
+     */
+    public static void assertAllGettersInvoked(Object proxy, String... excludeProperties) {
+        final Set<String> getters = gettersNotInvoked(proxy, excludeProperties);
         if (!getters.isEmpty()) {
             throw new IllegalStateException("Getters not invoked: " + getters);
         }
