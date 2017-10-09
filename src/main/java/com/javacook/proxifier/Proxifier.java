@@ -103,10 +103,17 @@ public class Proxifier {
         if (!enabled) {
             return Collections.EMPTY_SET;
         }
+
+        final Set<String> settersForProxy = Proxifier.setters.get(proxy);
+        if (settersForProxy == null) {
+            throw new IllegalArgumentException("Argument proxy must be an object produced by method proxyOf");
+        }
+
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .map(prop -> BeanNameUtils.prependSet(prop))
                 .collect(Collectors.toSet());
-        return Proxifier.setters.get(proxy).stream()
+
+        return settersForProxy.stream()
                 .filter(setter -> !excludePropSet.contains(setter))
                 .collect(Collectors.toSet());
     }
@@ -122,10 +129,17 @@ public class Proxifier {
         if (!enabled) {
             return Collections.EMPTY_SET;
         }
+
+        final Set<String> gettersForProxy = Proxifier.getters.get(proxy);
+        if (gettersForProxy == null) {
+            throw new IllegalArgumentException("Argument proxy must be an object produced by method proxyOf");
+        }
+
         final Set<String> excludePropSet = Arrays.stream(excludeProperties)
                 .flatMap(prop -> Arrays.asList(BeanNameUtils.prependGet(prop), BeanNameUtils.prependIs(prop)).stream())
                 .collect(Collectors.toSet());
-        return Proxifier.getters.get(proxy).stream()
+
+        return gettersForProxy.stream()
                 .filter(getter -> !excludePropSet.contains(getter))
                 .collect(Collectors.toSet());
     }
