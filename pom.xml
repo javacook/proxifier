@@ -7,7 +7,18 @@
     <groupId>de.javacook</groupId>
     <artifactId>proxifier</artifactId>
     <version>3.0</version>
+    <name>Proxifier</name>
+    <description>Utility to guarantee that all getters and setters of an object have been invoked, mainly in case of bean mappings</description>
+    <url>https://github.com/javacook/proxifier</url>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
