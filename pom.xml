@@ -4,9 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.javacook</groupId>
+    <groupId>de.javacook</groupId>
     <artifactId>proxifier</artifactId>
     <version>3.0</version>
+    <name>Proxifier</name>
+    <description>Utility to guarantee that all getters and setters of an object have been invoked, mainly in case of bean mappings</description>
+    <url>https://github.com/javacook/proxifier</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <build>
         <plugins>
@@ -65,13 +81,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>javacook-maven-repository</id>
-            <url>http://www.clean-coder.de:8080/artifactory/javacook/</url>
-        </repository>
-    </repositories>
-
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -107,4 +116,18 @@
         </profile>
     </profiles>
 
+    <developers>
+        <developer>
+            <email>javacook@gmx.de</email>
+            <name>Jörg Vollmer</name>
+            <url>https://github.com/javacook</url>
+            <id>javacook</id>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/javacook/proxifier.git</connection>
+        <developerConnection>scm:git:git@github.com:javacook/proxifier.git</developerConnection>
+        <url>https://github.com/javacook/proxifier</url>
+    </scm>
 </project>
